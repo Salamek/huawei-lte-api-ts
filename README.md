@@ -1,10 +1,3 @@
-# Time
-
-19:50 - 20:43
-23:00 - 8:00
-
-
-
 # huawei-lte-api
 API For huawei LAN/WAN LTE Modems,
 you can use this to simply send SMS, get information about your internet usage, signal, and tons of other stuff
