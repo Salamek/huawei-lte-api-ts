@@ -5,8 +5,8 @@
 
 
 
-# huawei-lte-api
-API For huawei LAN/WAN LTE Modems,
+# huawei-lte-api-ts
+API For huawei LAN/WAN LTE Modems rewritten from original Python library into TypeScript
 you can use this to simply send SMS, get information about your internet usage, signal, and tons of other stuff
 
 Tested on:
@@ -24,84 +24,70 @@ Tested on:
 Will NOT work on:
 * Huawei B2368-22 (Incompatible firmware, testing device needed!)
 
-PS: it is funny how many stuff you can request from modem/router without any authentication
-
 ## Installation
 
-### PIP (pip3 on some distros)
+### npm
 ```bash
-$ pip install huawei-lte-api
-```
-### Repository
-You can also use these repositories maintained by me
-#### Debian and derivates
-
-Add repository by running these commands
-
-```
-$ wget -O - https://repository.salamek.cz/deb/salamek.gpg.key|sudo apt-key add -
-$ echo "deb     https://repository.salamek.cz/deb/pub all main" | sudo tee /etc/apt/sources.list.d/salamek.cz.list
-```
-
-And then you can install a package python3-huawei-lte-api
-
-```
-$ apt update && apt install python3-huawei-lte-api
-```
-
-#### Archlinux
-
-Add repository by adding this at end of file /etc/pacman.conf
-
-```
-[salamek]
-Server = https://repository.salamek.cz/arch/pub/any
-SigLevel = Optional
-```
-
-and then install by running
-
-```
-$ pacman -Sy python-huawei-lte-api
+$ npm i huawei-lte-api --save
 ```
 
 ## Usage
 
-```python3
-from huawei_lte_api.Client import Client
-from huawei_lte_api.AuthorizedConnection import AuthorizedConnection
-from huawei_lte_api.Connection import Connection
+```typescript
+import { Connection, Device } from 'huawei-lte-api';
 
-# connection = Connection('http://192.168.8.1/') For limited access, I have valid credentials no need for limited access
-# connection = AuthorizedConnection('http://admin:MY_SUPER_TRUPER_PASSWORD@192.168.8.1/', login_on_demand=True) # If you wish to login on demand (when call requires authorization), pass login_on_demand=True
-connection = AuthorizedConnection('http://admin:MY_SUPER_TRUPER_PASSWORD@192.168.8.1/')
+const connection = Connection('http://admin:MY_SUPER_TRUPER_PASSWORD@192.168.8.1/')
 
-client = Client(connection) # This just simplifies access to separate API groups, you can use device = Device(connection) if you want
+//Can be accessed without authorization
+device.signal().then(function(result) {
+    console.log(result);
+}).catch(function(error) {
+    console.log(error);
+});
 
-print(client.device.signal())  # Can be accessed without authorization
-print(client.device.information())  # Needs valid authorization, will throw exception if invalid credentials are passed in URL
+//Needs valid authorization, will throw exception if invalid credentials are passed in URL
+device.information().then(function(result) {
+    console.log(result);
+}).catch(function(error) {
+    console.log(error);
+});
 
-
-# For more API calls just look on code in the huawei_lte_api/api folder, there is no separate DOC yet
+# For more API calls just look on code in the src/api folder, there is no separate DOC yet
 
 ```
 Result dict
-```python
+```javascript
 {'DeviceName': 'B310s-22', 'SerialNumber': 'MY_SERIAL_NUMBER', 'Imei': 'MY_IMEI', 'Imsi': 'MY_IMSI', 'Iccid': 'MY_ICCID', 'Msisdn': None, 'HardwareVersion': 'WL1B310FM03', 'SoftwareVersion': '21.311.06.03.55', 'WebUIVersion': '17.100.09.00.03', 'MacAddress1': 'EHM:MY:MAC', 'MacAddress2': None, 'ProductFamily': 'LTE', 'Classify': 'cpe', 'supportmode': None, 'workmode': 'LTE'}
 ```
 
-## Code examples
-### Monitoring
+```javascript
+const huaweiLteApi = require('huawei-lte-api');
 
-* Monitoring traffic and signal https://github.com/littlejo/huawei-lte-examples
-* Set band, show signal level and bandwidth for Huawei mobile broadband B525s-23a. https://github.com/octave21/huawei-lte
+const connection = new huaweiLteApi.Connection('http://admin:password@192.168.8.1/');
 
-### SMS
-
-* Relay received SMS into your email https://github.com/chenwei791129/Huawei-LTE-Router-SMS-to-E-mail-Sender
+connection.ready.then(() => {
+    console.log('Ready');
 
 
-## Donations
+    const device = new huaweiLteApi.Device(connection);
+    device.signal().then(function(result) {
+        console.log(result);
+    }).catch(function(error) {
+        console.log(error);
+    });
 
-* 250 CZK (9,79 EUR) for B535-232 fund, thx @larsvinc !
 
+    device.information().then(function(result) {
+        console.log(result);
+    }).catch(function(error) {
+        console.log(error);
+    });
+
+    const dialUp = new huaweiLteApi.DialUp(connection);
+    dialUp.setMobileDataswitch(1).then(function(result) {
+        console.log(result);
+    }).catch(function(error) {
+        console.log(error);
+    });
+});
+```

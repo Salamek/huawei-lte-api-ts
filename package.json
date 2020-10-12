@@ -1,6 +1,6 @@
 {
   "name": "huawei-lte-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "API For huawei LAN/WAN LTE Modems",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/Salamek/huawei-lte-api-ts"
   },
-  "keywords": [],
+  "keywords": ["Huawei LTE", "API"],
   "author": "Adam Schubert <adam.schubert@sg1-game.net>",
   "license": "LGPL-3.0",
   "devDependencies": {
