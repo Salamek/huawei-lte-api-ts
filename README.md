@@ -32,23 +32,23 @@ import { Connection, Device } from 'huawei-lte-api';
 const connection = Connection('http://admin:MY_SUPER_TRUPER_PASSWORD@192.168.8.1/')
 
 //Can be accessed without authorization
-device.signal().then(function(result) {
+device.signal().then((result) => {
     console.log(result);
-}).catch(function(error) {
+}).catch((error) => {
     console.log(error);
 });
 
 //Needs valid authorization, will throw exception if invalid credentials are passed in URL
-device.information().then(function(result) {
+device.information().then((result) => {
     console.log(result);
-}).catch(function(error) {
+}).catch((error) => {
     console.log(error);
 });
 
 # For more API calls just look on code in the src/api folder, there is no separate DOC yet
 
 ```
-Result dict
+Result object
 ```javascript
 {'DeviceName': 'B310s-22', 'SerialNumber': 'MY_SERIAL_NUMBER', 'Imei': 'MY_IMEI', 'Imsi': 'MY_IMSI', 'Iccid': 'MY_ICCID', 'Msisdn': None, 'HardwareVersion': 'WL1B310FM03', 'SoftwareVersion': '21.311.06.03.55', 'WebUIVersion': '17.100.09.00.03', 'MacAddress1': 'EHM:MY:MAC', 'MacAddress2': None, 'ProductFamily': 'LTE', 'Classify': 'cpe', 'supportmode': None, 'workmode': 'LTE'}
 ```
