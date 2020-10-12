@@ -1,0 +1,40 @@
+{
+  "name": "huawei-lte-api",
+  "version": "0.0.1",
+  "description": "API For huawei LAN/WAN LTE Modems",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepare": "npm run build",
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "lint-and-fix": "eslint . --ext .ts --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Salamek/huawei-lte-api-ts"
+  },
+  "keywords": [],
+  "author": "Adam Schubert <adam.schubert@sg1-game.net>",
+  "license": "LGPL-3.0",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.0",
+    "eslint": "^7.11.0",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@types/crypto-js": "^4.0.1",
+    "@types/tough-cookie": "^4.0.0",
+    "@types/xml2js": "^0.4.5",
+    "axios": "^0.20.0",
+    "axios-cookiejar-support": "^1.0.0",
+    "crypto-js": "^4.0.0",
+    "form-data": "^3.0.0",
+    "npm": "^6.14.8",
+    "tough-cookie": "^4.0.0",
+    "xml2js": "^0.4.23",
+    "xmlbuilder2": "^2.4.0"
+  }
+}
