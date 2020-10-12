@@ -51,7 +51,7 @@ export class User extends ApiGroup {
             'Password': password,
             'password_type': passwordType.toString()
         }, true).then((response: any/*SetResponseType*/) => {
-            return response.response == ResponseEnum.OK
+            return response == ResponseEnum.OK
         }).catch((error: any) => {
             if (error instanceof ResponseErrorException) {
                 const errorCodeToMessage: { [key in keyof typeof LoginErrorEnum]?: string } = {
@@ -89,6 +89,7 @@ export class User extends ApiGroup {
         for (const i of Array.from(Array(tries).keys())) {
             try{
                 stateLogin = await this.stateLogin();
+                break;
             } catch (error) {
                 if (error instanceof ResponseErrorNotSupportedException) {
                     return true;
@@ -104,11 +105,11 @@ export class User extends ApiGroup {
             }
         }
 
-        if (LoginStateEnum.LOGGED_IN == parseInt(stateLogin.response['State']) && !forceNewLogin){
+        if (LoginStateEnum.LOGGED_IN == parseInt(stateLogin['State']) && !forceNewLogin){
             return true;
         }
         
-        const passwordType = parseInt(stateLogin.response['password_type']);
+        const passwordType = parseInt(stateLogin['password_type']);
         return this.attemptLogin(passwordType);
     }
 
