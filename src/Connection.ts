@@ -48,11 +48,11 @@ export class Connection {
         urlInfo.username = '';
         urlInfo.password = '';
 
-        
+
         this.ready = new Promise((resolve, reject) => {
             this.initializeCsrfTokensAndSession().then(() => {
                 // Login code
-                if (username){
+                if (username) {
                     // Username is specified, we need to login
                     const user = new User(this, username, password);
                     user.login(true).then(() => {
@@ -63,10 +63,6 @@ export class Connection {
                 }
             }).catch(reject);
         });
-
-        
-
-        
     }
 
     reload(): void {
@@ -110,8 +106,7 @@ export class Connection {
         }
     }
 
-    private checkResponseStatus(data: any) {
-
+    private checkResponseStatus(data: any): any {
         const errorCodeToMessage: { [key in keyof typeof ResponseCodeEnum]?: string } = {
             [ResponseCodeEnum.ERROR_SYSTEM_BUSY]: 'System busy',
             [ResponseCodeEnum.ERROR_SYSTEM_NO_RIGHTS]: 'No rights (needs login)',
@@ -212,7 +207,9 @@ export class Connection {
                 headers: headers
             }
         ).then((response: AxiosResponse) => {
-            return this.checkResponseStatus(this.processResponseXml(response));
+            return this.processResponseXml(response).then((rawData: any) => {
+                return this.checkResponseStatus(rawData);
+            });
         });
     }
 
@@ -277,7 +274,7 @@ export class Connection {
                 formData.append(key, value);
             });
         }
-        
+
         return this.session.post(
             this.buildFinalUrl(endpoint, prefix),
             formData
