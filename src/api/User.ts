@@ -4,6 +4,7 @@ import { PasswordTypeEnum, LoginStateEnum, LoginErrorEnum } from '../enums/user'
 import { ResponseEnum } from '../enums/client';
 import { ApiGroup } from '../ApiGroup';
 import { Connection } from '../Connection';
+import { GetResponseType, SetResponseType } from '../types';
 
 
 import {
@@ -27,7 +28,7 @@ export class User extends ApiGroup {
         this._password = password;
     }
 
-    delay(seconds: number): Promise<any> {
+    delay(seconds: number): Promise<never> {
         return new Promise( resolve => setTimeout(resolve, seconds * 1000) );
     }
 
@@ -50,9 +51,9 @@ export class User extends ApiGroup {
             'Username': this.username,
             'Password': password,
             'password_type': passwordType.toString()
-        }, true).then((response: any/*SetResponseType*/) => {
+        }, true).then((response: SetResponseType) => {
             return response == ResponseEnum.OK
-        }).catch((error: any) => {
+        }).catch((error) => {
             if (error instanceof ResponseErrorException) {
                 const errorCodeToMessage: { [key in keyof typeof LoginErrorEnum]?: string } = {
                     [LoginErrorEnum.USERNAME_WRONG]: 'Username wrong',
@@ -82,13 +83,17 @@ export class User extends ApiGroup {
         })
     }
 
+    /**
+     * Login user
+     * @param forceNewLogin Force new loging even when State == LoginStateEnum.LOGGED_IN
+     */
     async login(forceNewLogin: boolean = false): Promise<boolean> {
         const tries: number = 5;
 
         let stateLogin;
         for (const i of Array.from(Array(tries).keys())) {
             try{
-                stateLogin = await this.stateLogin();
+                stateLogin = <{State: string, Username: string, password_type: string}>await this.stateLogin();
                 break;
             } catch (error) {
                 if (error instanceof ResponseErrorNotSupportedException) {
@@ -105,7 +110,11 @@ export class User extends ApiGroup {
             }
         }
 
-        if (LoginStateEnum.LOGGED_IN == parseInt(stateLogin['State']) && !forceNewLogin){
+        if (!stateLogin) {
+            return true;
+        }
+
+        if (LoginStateEnum.LOGGED_IN == parseInt(stateLogin['State']) && !forceNewLogin) {
             return true;
         }
         
@@ -113,82 +122,82 @@ export class User extends ApiGroup {
         return this.attemptLogin(passwordType);
     }
 
-    logout(): Promise<any>/*SetResponseType*/{
-        return this._connection.get('user/logout');
+    logout(): Promise<SetResponseType> {
+        return this._connection.postSet('user/logout', {'Logout': 1});
     }
 
-    stateLogin(): Promise<any> /*GetResponseType*/{
+    stateLogin(): Promise<GetResponseType> {
         return this._connection.get('user/state-login');
     }
 
-    remind(): Promise<any> /*GetResponseType*/ {
+    remind(): Promise<GetResponseType> {
         return this._connection.get('user/remind');
     }
 
-    password(): Promise<any> /*-> GetResponseType*/{
+    password(): Promise<GetResponseType> {
         return this._connection.get('user/password');
     }
         
 
-    pwd(): Promise<any> /*-> GetResponseType*/{
+    pwd(): Promise<GetResponseType> {
         return this._connection.get('user/pwd');
     }
         
 
-    setRemind(remind_state: string): Promise<any> /*-> SetResponseType*/{
+    setRemind(remind_state: string): Promise<SetResponseType> {
         return this._connection.postSet('user/remind', {
             'remindstate': remind_state
         });
     }
         
 
-    authenticationLogin(): Promise<any> /*-> GetResponseType*/{
+    authenticationLogin(): Promise<GetResponseType> {
         return this._connection.get('user/authentication_login');
     }
         
 
-    challengeLogin(): Promise<any> /*-> GetResponseType*/{
+    challengeLogin(): Promise<GetResponseType> {
         return this._connection.get('user/challenge_login');
     }
         
 
-    hilinkLogin(): Promise<any> /*-> GetResponseType*/{
+    hilinkLogin(): Promise<GetResponseType> {
         return this._connection.get('user/hilink_login');
     }
         
 
-    historyLogin(): Promise<any> /*-> GetResponseType*/{
+    historyLogin(): Promise<GetResponseType> {
         return this._connection.get('user/history-login');
     }
         
 
-    heartbeat(): Promise<any> /*-> GetResponseType*/{
+    heartbeat(): Promise<GetResponseType> {
         return this._connection.get('user/heartbeat');
     }
         
 
-    webFeatureSwitch(): Promise<any> /*-> GetResponseType*/{
+    webFeatureSwitch(): Promise<GetResponseType> {
         return this._connection.get('user/web-feature-switch');
     }
         
     /**
      * Endpoint found by reverse engineering B310s-22 firmware, unknown usage
      */
-    inputEvent(): Promise<any> /*-> GetResponseType*/{
+    inputEvent(): Promise<GetResponseType> {
         return this._connection.get('user/input_event')
     }
 
     /**
      * Endpoint found by reverse engineering B310s-22 firmware, unknown usage
      */
-    screenState(): Promise<any> /*-> GetResponseType*/{
+    screenState(): Promise<GetResponseType> {
         return this._connection.get('user/screen_state')
     }
 
     /**
      * Endpoint found by reverse engineering B310s-22 firmware, unknown usage
      */
-    session(): Promise<any> /*-> GetResponseType*/{
+    session(): Promise<GetResponseType> {
         return this._connection.get('user/session')
     }
 

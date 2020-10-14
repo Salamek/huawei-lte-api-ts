@@ -6,6 +6,7 @@ import { resolve } from 'url';
 import { join } from 'path';
 import { AxiosResponse } from 'axios';
 import * as FormData from 'form-data';
+import { GetResponseType, SetResponseType } from './types'
 
 import {
     ResponseErrorException,
@@ -14,7 +15,6 @@ import {
     ResponseErrorSystemBusyException,
     ResponseErrorLoginCsrfException
 } from './exceptions';
-
 
 /*
 def _try_or_reload_and_retry(fn: Callable[..., T]) -> Callable[..., T]:
@@ -32,7 +32,7 @@ export class Connection {
     requestVerificationTokens: string[] = [];
     url: string;
     session: Session;
-    ready: Promise<any>;
+    ready: Promise<never>;
 
     constructor(url: string, timeout: number) {
         this.session = new Session(timeout);
@@ -69,14 +69,14 @@ export class Connection {
         this.initializeCsrfTokensAndSession();
     }
 
-    private createRequestXml(data: any): string {
+    private createRequestXml(data: Record<string, unknown>): string {
         const builder = new Builder();
         return builder.buildObject({
             request: data
         });
     }
 
-    private async processResponseXml(response: AxiosResponse): Promise<any> {
+    private async processResponseXml(response: AxiosResponse): Promise<Record<string, unknown>> {
         // In some cases unsupported methods, e.g. in config namespace,
         // respond with a redirect to the home page, which may not
         // parse as XML (even though it's labeled XHTML). Try to detect
@@ -106,7 +106,7 @@ export class Connection {
         }
     }
 
-    private checkResponseStatus(data: any): any {
+    private checkResponseStatus(data: Record<string, unknown>): string | Record<string, unknown> {
         const errorCodeToMessage: { [key in keyof typeof ResponseCodeEnum]?: string } = {
             [ResponseCodeEnum.ERROR_SYSTEM_BUSY]: 'System busy',
             [ResponseCodeEnum.ERROR_SYSTEM_NO_RIGHTS]: 'No rights (needs login)',
@@ -124,12 +124,13 @@ export class Connection {
         }
 
         if ('error' in data) {
+            const errorData = <{error: {code: string, message: string}}>data;
             let message: string;
-            const errorCode = parseInt(data.error.code);
-            if (!data.error.message) {
+            const errorCode = parseInt(errorData.error.code);
+            if (!errorData.error.message) {
                 message = errorCodeToMessage[errorCode] || 'Unknown';
             } else {
-                message = data.error.message;
+                message = errorData.error.message;
             }
 
             const exception = errorCodeToException[errorCode] || ResponseErrorException;
@@ -137,7 +138,11 @@ export class Connection {
             throw new exception(`${errorCode}: ${message}`, errorCode);
         }
 
-        return ('response' in data ? data['response'] : data) || {};
+        if ('response' in data) {
+            return <string | Record<string, unknown>>data['response'];
+        } else {
+            return data || {};
+        }
     }
 
     private async initializeCsrfTokensAndSession(): Promise<void> {
@@ -171,21 +176,21 @@ export class Connection {
         return resolve(this.url, join(prefix, endpoint));
     }
 
-    postGet(endpoint: string, data: any, refreshCsrf: boolean = false, prefix: string = 'api'): Promise<any>/*GetResponseType*/ {
-        return this.post(endpoint, data, refreshCsrf, prefix);
+    postGet(endpoint: string, data: Record<string, unknown>, refreshCsrf: boolean = false, prefix: string = 'api'): Promise<GetResponseType> {
+        return <Promise<GetResponseType>>this.post(endpoint, data, refreshCsrf, prefix);
     }
 
-    postSet(endpoint: string, data: any, refreshCsrf: boolean = false, prefix: string = 'api'): Promise<any>/*SetResponseType*/ {
-        return this.post(endpoint, data, refreshCsrf, prefix);
+    postSet(endpoint: string, data: Record<string, unknown>, refreshCsrf: boolean = false, prefix: string = 'api'): Promise<SetResponseType> {
+        return <Promise<SetResponseType>>this.post(endpoint, data, refreshCsrf, prefix);
     }
 
     private async getToken(): Promise<string> {
         try {
-            const data = await this.get('webserver/token');
+            const data = <{ [key: string]: string; }>await this.get('webserver/token');
             return data['token'];
         } catch (error) {
             if (error instanceof ResponseErrorNotSupportedException) {
-                const data = await this.get('webserver/SesTokInfo');
+                const data = <{ [key: string]: string; }>await this.get('webserver/SesTokInfo');
                 return data['TokInfo'];
             } else {
                 throw error;
@@ -194,28 +199,26 @@ export class Connection {
     }
 
     //@_try_or_reload_and_retry
-    async get(endpoint: string, parameters?: { [key: string]: string; }, prefix: string = 'api'): Promise<any> {
+    async get(endpoint: string, parameters?: { [key: string]: string; }, prefix: string = 'api'): Promise<GetResponseType> {
         const headers: { [key: string]: string; } = {};
         if (this.requestVerificationTokens.length == 1) {
             headers['__RequestVerificationToken'] = this.requestVerificationTokens[0];
         }
 
-        return this.session.get(
+        return <Promise<GetResponseType>>this.session.get(
             this.buildFinalUrl(endpoint, prefix),
             {
                 params: parameters,
                 headers: headers
             }
-        ).then((response: AxiosResponse) => {
-            return this.processResponseXml(response).then((rawData: any) => {
-                return this.checkResponseStatus(rawData);
-            });
+        ).then(async (response: AxiosResponse) => {
+            const rawData = await this.processResponseXml(response);
+            return this.checkResponseStatus(rawData);
         });
     }
 
     //@_try_or_reload_and_retry
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private async post(endpoint: string, data?: any, refreshCsrf: boolean = false, prefix: string = 'api'): Promise<any> {
+    private async post(endpoint: string, data?: Record<string, unknown>, refreshCsrf: boolean = false, prefix: string = 'api'): Promise<unknown> {
         const headers: { [key: string]: string; } = {
             'Content-Type': 'application/xml'
         }
@@ -232,8 +235,11 @@ export class Connection {
             {
                 headers: headers
             }
-        ).then((response: AxiosResponse) => {
-            const responseData = this.checkResponseStatus(this.processResponseXml(response));
+        ).then(async (response: AxiosResponse) => {
+            const responseData = await this.processResponseXml(response).then((rawData: Record<string, unknown>) => {
+                return this.checkResponseStatus(rawData);
+            });
+
             if (refreshCsrf) {
                 this.requestVerificationTokens = [];
             }
@@ -245,16 +251,13 @@ export class Connection {
                 }
             } else if ('__requestverificationtoken:' in response.headers) {
                 this.requestVerificationTokens.push(response.headers['__requestverificationtoken:']);
-            } else {
-                // eslint-disable-next-line no-console
-                console.debug('Failed to get CSRF from POST response headers');
             }
 
             return responseData;
         });
     }
 
-    private async postFile(
+    async postFile(
         endpoint: string,
         files: { [key: string]: Blob; },
         data?: { [key: string]: string | Blob | number; },
@@ -278,6 +281,6 @@ export class Connection {
         return this.session.post(
             this.buildFinalUrl(endpoint, prefix),
             formData
-        )
+        );
     }
 }

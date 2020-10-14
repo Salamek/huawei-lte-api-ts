@@ -1,34 +1,31 @@
 import { ApiGroup } from '../ApiGroup';
+import { GetResponseType, SetResponseType } from '../types';
 
 export class DialUp extends ApiGroup {
     /**
      * Get current LTE modem toggle state
      */
-    mobileDataswitch(): Promise<any> /* -> GetResponseType*/ {
+    mobileDataswitch(): Promise<GetResponseType> {
         return this._connection.get('dialup/mobile-dataswitch')
     }
 
-    connection(): Promise<any> /* -> GetResponseType*/ {
+    connection(): Promise<GetResponseType> {
         return this._connection.get('dialup/connection')
     }
 
-
-    dialupFeatureSwitch(): Promise<any> /* -> GetResponseType*/ {
+    dialupFeatureSwitch(): Promise<GetResponseType> {
         return this._connection.get('dialup/dialup-feature-switch')
     }
 
-
-    profiles(): Promise<any> /* -> GetResponseType*/ {
+    profiles(): Promise<GetResponseType> {
         return this._connection.get('dialup/profiles')
     }
 
-
-    autoApn() : Promise<any>/* -> GetResponseType*/ {
+    autoApn(): Promise<GetResponseType> {
         return this._connection.get('dialup/auto-apn')
     }
 
-
-    dial(): Promise<any> /*-> SetResponseType*/ {
+    dial(): Promise<SetResponseType> {
         return this._connection.postSet('dialup/dial', {
             'Action': 1
         });
@@ -38,7 +35,7 @@ export class DialUp extends ApiGroup {
      * Toggle LTE modem state
      * @param dataswitch: number 0 to disable LTE modem, 1 to enable LTE modem
      */
-    setMobileDataswitch(dataswitch: number = 0): Promise<any>/* -> SetResponseType*/ {
+    setMobileDataswitch(dataswitch: number = 0): Promise<SetResponseType> {
         return this._connection.postSet('dialup/mobile-dataswitch', {
             'dataswitch': dataswitch
         })
