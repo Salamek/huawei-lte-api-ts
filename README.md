@@ -1,5 +1,5 @@
 # huawei-lte-api-ts
-API For huawei LAN/WAN LTE Modems rewritten from original Python library into TypeScript
+API For huawei LAN/WAN LTE Modems rewritten from [original Python library](https://github.com/Salamek/huawei-lte-api) into TypeScript
 you can use this to simply send SMS, get information about your internet usage, signal, and tons of other stuff
 
 ### Tested on:
