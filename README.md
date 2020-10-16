@@ -37,21 +37,21 @@ $ npm i huawei-lte-api --save
 import { Connection, Device } from 'huawei-lte-api';
 
 const connection = Connection('http://admin:MY_SUPER_TRUPER_PASSWORD@192.168.8.1/')
+connection.ready.then(() => {
+    //Can be accessed without authorization
+    device.signal().then((result) => {
+        console.log(result);
+    }).catch((error) => {
+        console.log(error);
+    });
 
-//Can be accessed without authorization
-device.signal().then((result) => {
-    console.log(result);
-}).catch((error) => {
-    console.log(error);
+    //Needs valid authorization, will throw exception if invalid credentials are passed in URL
+    device.information().then((result) => {
+        console.log(result);
+    }).catch((error) => {
+        console.log(error);
+    });
 });
-
-//Needs valid authorization, will throw exception if invalid credentials are passed in URL
-device.information().then((result) => {
-    console.log(result);
-}).catch((error) => {
-    console.log(error);
-});
-
 # For more API calls just look on code in the src/api folder, there is no separate DOC yet
 
 ```
@@ -65,7 +65,7 @@ const huaweiLteApi = require('huawei-lte-api');
 
 const connection = new huaweiLteApi.Connection('http://admin:password@192.168.8.1/');
 
-connection.ready.then(() => {
+connection.ready.then(function() {
     console.log('Ready');
 
 
