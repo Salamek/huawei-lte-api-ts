@@ -89,7 +89,7 @@ export class Connection {
             return {}
         }
 
-        const parser = new Parser();
+            const parser = new Parser({explicitArray : false});
 
         try {
             return await parser.parseStringPromise(xml)
