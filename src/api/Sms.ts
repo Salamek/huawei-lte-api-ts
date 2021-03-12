@@ -53,7 +53,7 @@ export class Sms extends ApiGroup {
    backupSim(fromDate: Date, isMove: boolean = false): Promise<SetResponseType> {
       return this._connection.postSet('sms/backup-sim', {
          'IsMove': isMove ? 1 : 0,
-         'Date': fromDate
+         'Date': fromDate.toISOString().slice(0, 19).replace('T', ' ')
       });
    }
 
@@ -82,12 +82,12 @@ export class Sms extends ApiGroup {
 
       return this._connection.postSet('sms/save-sms', {
          'Index': smsIndex,
-         'Phones': phoneNumbers,
+         'Phones': { 'Phone' : phoneNumbers },
          'Sca': sca,
          'Content': message,
          'Length': message.length,
          'Reserved': textMode,
-         'Date': fromDate
+         'Date': fromDate.toISOString().slice(0, 19).replace('T', ' ')
       });
    }
 
@@ -111,12 +111,12 @@ export class Sms extends ApiGroup {
 
       return this._connection.postSet('sms/send-sms', {
          'Index': smsIndex,
-         'Phones': phoneNumbers,
+         'Phones': { 'Phone' : phoneNumbers },
          'Sca': sca,
          'Content': message,
          'Length': message.length,
          'Reserved': textMode,
-         'Date': date
+         'Date': date.toISOString().slice(0, 19).replace('T', ' ')
       });
    }
 
