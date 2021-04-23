@@ -75,23 +75,21 @@ export class WLan extends ApiGroup {
         // Make sure Hosts->Host is a list
         // It may be returned as a single dict if only one is associated,
         // as well as sometimes None.
+        return this._connection.get('wlan/host-list')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const hosts = <any>this._connection.get('wlan/host-list');
-        if (!hosts['Hosts']) {
-            hosts['Hosts'] = {};
-        }
-
-
-        if (!Object.prototype.hasOwnProperty.call(hosts['Hosts'], 'Host')) {
-            hosts['Hosts']['Host'] = [];
-        }
-
-        const host = hosts['Hosts']['Host'];
-        if (host instanceof Array) {
-            hosts['Hosts']['Host'] = [host]
-        }
-
-        return host;
+		.then((hosts: any) => {
+            if (!hosts['Hosts']) {
+                hosts['Hosts'] = {};
+            }
+            if (!Object.prototype.hasOwnProperty.call(hosts['Hosts'], 'Host')) {
+                hosts['Hosts']['Host'] = [];
+            }
+            const host = hosts['Hosts']['Host'];
+            if (host instanceof Array) {
+                hosts['Hosts']['Host'] = [host];
+            }
+            return host;
+		})
     }
 
     handoverSetting(): Promise<GetResponseType> {
