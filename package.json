@@ -15,26 +15,27 @@
     "type": "git",
     "url": "git+https://github.com/Salamek/huawei-lte-api-ts"
   },
-  "keywords": ["Huawei LTE", "API"],
+  "keywords": [
+    "Huawei LTE",
+    "API"
+  ],
   "author": "Adam Schubert <adam.schubert@sg1-game.net>",
   "license": "LGPL-3.0",
   "devDependencies": {
+    "@types/crypto-js": "^4.0.0",
+    "@types/tough-cookie": "^4.0.0",
+    "@types/xml2js": "^0.4.9",
     "@typescript-eslint/eslint-plugin": "^4.4.0",
     "@typescript-eslint/parser": "^4.4.0",
     "eslint": "^7.11.0",
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "@types/crypto-js": "^4.0.1",
-    "@types/tough-cookie": "^4.0.0",
-    "@types/xml2js": "^0.4.5",
-    "axios": "^0.20.0",
+    "axios": "^0.24.0",
     "axios-cookiejar-support": "^1.0.0",
     "crypto-js": "^4.0.0",
     "form-data": "^3.0.0",
-    "npm": "^6.14.8",
     "tough-cookie": "^4.0.0",
-    "xml2js": "^0.4.23",
-    "xmlbuilder2": "^2.4.0"
+    "xml2js": "^0.4.23"
   }
 }

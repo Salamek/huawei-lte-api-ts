@@ -32,7 +32,7 @@ export class Connection {
     requestVerificationTokens: string[] = [];
     url: string;
     session: Session;
-    ready: Promise<never>;
+    ready: Promise<void>;
 
     constructor(url: string, timeout: number) {
         this.session = new Session(timeout);
