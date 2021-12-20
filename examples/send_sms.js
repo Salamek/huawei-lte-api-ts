@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /*
 Example code on how to send a SMS, you can try it by running:
-node send_sms.py http://admin:PASSWORD@192.168.8.1/ +420123456789 "Hello world"
+node send_sms.js http://admin:PASSWORD@192.168.8.1/ +420123456789 "Hello world"
 */
 const process = require('process');
 const lte = require('../dist/index.js');
