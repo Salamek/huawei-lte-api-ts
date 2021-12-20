@@ -2,7 +2,6 @@ import { User } from './api/User';
 import { ResponseCodeEnum } from './enums/client';
 import { Session } from './Session';
 import { Parser, Builder } from "xml2js";
-import { resolve } from 'url';
 import { join } from 'path';
 import { AxiosResponse } from 'axios';
 import * as FormData from 'form-data';
@@ -15,6 +14,7 @@ import {
     ResponseErrorSystemBusyException,
     ResponseErrorLoginCsrfException
 } from './exceptions';
+
 
 /*
 def _try_or_reload_and_retry(fn: Callable[..., T]) -> Callable[..., T]:
@@ -181,7 +181,8 @@ export class Connection {
     }
 
     private buildFinalUrl(endpoint: string, prefix: string = 'api'): string {
-        return resolve(this.url, join(prefix, endpoint));
+        const url = new URL(join(prefix, endpoint), this.url);
+        return url.toString();
     }
 
     postGet(endpoint: string, data: Record<string, unknown>, refreshCsrf: boolean = false, prefix: string = 'api'): Promise<GetResponseType> {
