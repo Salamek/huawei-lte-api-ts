@@ -70,7 +70,15 @@ export class Connection {
     }
 
     private createRequestXml(data: Record<string, unknown>): string {
-        const builder = new Builder();
+        /* Force empty tags instead of selfclosing tags */
+        const builder = new Builder(<any>{
+            renderOpts: {
+                pretty: true,
+                indent: ' ',
+                newline: '\n',
+                allowEmpty: true
+            }
+        });
         return builder.buildObject({
             request: data
         });
@@ -89,7 +97,7 @@ export class Connection {
             return {}
         }
 
-            const parser = new Parser({explicitArray : false});
+        const parser = new Parser({explicitArray : false});
 
         try {
             return await parser.parseStringPromise(xml)
