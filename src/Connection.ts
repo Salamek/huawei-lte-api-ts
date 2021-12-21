@@ -36,18 +36,18 @@ export class Connection {
 
     constructor(url: string, timeout: number) {
         this.session = new Session(timeout);
-        this.url = url;
 
-        if (!this.url.endsWith('/')) {
-            this.url += '/';
+        if (!url.endsWith('/')) {
+            url += '/';
         }
 
-        const urlInfo = new URL(this.url);
+        const urlInfo = new URL(url);
         const username = urlInfo.username;
         const password = urlInfo.password;
         urlInfo.username = '';
         urlInfo.password = '';
 
+        this.url = urlInfo.toString();
 
         this.ready = new Promise((resolve, reject) => {
             this.initializeCsrfTokensAndSession().then(() => {
