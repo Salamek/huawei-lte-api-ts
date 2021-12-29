@@ -35,3 +35,6 @@ export class LoginErrorUsernamePasswordOverrunException extends ResponseErrorExc
 
 
 export class LoginErrorUsernamePasswordModifyException extends ResponseErrorException { }
+
+
+export class RequestFormatException extends ResponseErrorException { }

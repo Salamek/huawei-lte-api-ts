@@ -12,7 +12,8 @@ import {
     ResponseErrorLoginRequiredException,
     ResponseErrorNotSupportedException,
     ResponseErrorSystemBusyException,
-    ResponseErrorLoginCsrfException
+    ResponseErrorLoginCsrfException,
+    RequestFormatException
 } from './exceptions';
 
 
@@ -120,7 +121,8 @@ export class Connection {
             [ResponseCodeEnum.ERROR_SYSTEM_NO_RIGHTS]: 'No rights (needs login)',
             [ResponseCodeEnum.ERROR_SYSTEM_NO_SUPPORT]: 'No support',
             [ResponseCodeEnum.ERROR_SYSTEM_UNKNOWN]: 'Unknown',
-            [ResponseCodeEnum.ERROR_SYSTEM_CSRF]: 'Session error'
+            [ResponseCodeEnum.ERROR_SYSTEM_CSRF]: 'Session error',
+            [ResponseCodeEnum.ERROR_FORMAT_ERROR]: 'Request format error',
         }
 
         const errorCodeToException: { [key in keyof typeof ResponseCodeEnum]?: typeof ResponseErrorException } = {
@@ -128,7 +130,8 @@ export class Connection {
             [ResponseCodeEnum.ERROR_SYSTEM_NO_RIGHTS]: ResponseErrorLoginRequiredException,
             [ResponseCodeEnum.ERROR_SYSTEM_NO_SUPPORT]: ResponseErrorNotSupportedException,
             [ResponseCodeEnum.ERROR_SYSTEM_UNKNOWN]: ResponseErrorException,
-            [ResponseCodeEnum.ERROR_SYSTEM_CSRF]: ResponseErrorLoginCsrfException
+            [ResponseCodeEnum.ERROR_SYSTEM_CSRF]: ResponseErrorLoginCsrfException,
+            [ResponseCodeEnum.ERROR_FORMAT_ERROR]: RequestFormatException,
         }
 
         if ('error' in data) {
