@@ -73,7 +73,7 @@ export class Connection {
         /* Force empty tags instead of selfclosing tags */
         const builder = new Builder(<any>{
             renderOpts: {
-                pretty: true,
+                pretty: false,
                 indent: ' ',
                 newline: '\n',
                 allowEmpty: true
