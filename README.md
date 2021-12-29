@@ -11,6 +11,7 @@ you can use this to simply send SMS, get information about your internet usage, 
 * Huawei B715s-23c
 * Huawei E5186s-22a
 * Huawei B528s
+* Huawei E5576-320
 * Huawei E5577Cs-321
 
 #### 3G/LTE USB sticks:
