@@ -37,8 +37,11 @@ $ npm i huawei-lte-api --save
 ```typescript
 import { Connection, Device } from 'huawei-lte-api';
 
-const connection = Connection('http://admin:MY_SUPER_TRUPER_PASSWORD@192.168.8.1/')
+const connection = new Connection('http://admin:MY_SUPER_TRUPER_PASSWORD@192.168.8.1/');
+
 connection.ready.then(() => {
+    const device = new Device(connection);
+
     //Can be accessed without authorization
     device.signal().then((result) => {
         console.log(result);
