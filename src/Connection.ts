@@ -43,8 +43,8 @@ export class Connection {
         }
 
         const urlInfo = new URL(url);
-        const username = urlInfo.username;
-        const password = urlInfo.password;
+        const username = decodeURIComponent(urlInfo.username);
+        const password = decodeURIComponent(urlInfo.password);
         urlInfo.username = '';
         urlInfo.password = '';
 
