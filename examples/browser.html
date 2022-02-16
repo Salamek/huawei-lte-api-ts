@@ -1,0 +1,28 @@
+<html>
+<head>
+    <script type="application/javascript" src="dist.browser/bundle.js"></script>
+    <script>
+    // If you run into CORS issues USE proxy server in web_proxy folder to comunitcate with your router
+    const connection = new HuaweiLteApi.Connection('http://admin:MY_PASSWORD@127.0.0.1:3000/'); 
+
+    connection.ready.then(() => {
+        const device = new HuaweiLteApi.Device(connection);
+
+        //Can be accessed without authorization
+        device.signal().then((result) => {
+            console.log(result);
+        }).catch((error) => {
+            console.log(error);
+        });
+
+        //Needs valid authorization, will throw exception if invalid credentials are passed in URL
+        device.information().then((result) => {
+            console.log(result);
+        }).catch((error) => {
+            console.log(error);
+        });
+    });
+    </script>
+</head>
+<body></body>
+</html>

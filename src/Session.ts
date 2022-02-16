@@ -1,8 +1,9 @@
 import axios from 'axios';
-import axiosCookieJarSupport from 'axios-cookiejar-support';
+import { wrapper } from 'axios-cookiejar-support';
 import * as tough from 'tough-cookie';
 import { AxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
 import * as FormData  from 'form-data';
+
 
 export class Session {
     axiosInstance!: AxiosInstance;
@@ -10,13 +11,13 @@ export class Session {
 
 
     constructor(timeout: number) {
-        axiosCookieJarSupport(axios);
-        this.cookieJar = new tough.CookieJar();
-        this.axiosInstance = axios.create({
+        const cookieStore = new tough.MemoryCookieStore();
+        this.cookieJar = new tough.CookieJar(cookieStore);
+        this.axiosInstance = wrapper(axios.create({
             timeout: timeout,
             jar: this.cookieJar,
             withCredentials: true
-        });
+        }));
     }
 
     async get(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
