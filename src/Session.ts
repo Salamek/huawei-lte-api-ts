@@ -10,11 +10,11 @@ export class Session {
     cookieJar: tough.CookieJar;
 
 
-    constructor(timeout: number) {
+    constructor(axios_config: AxiosRequestConfig) {
         const cookieStore = new tough.MemoryCookieStore();
         this.cookieJar = new tough.CookieJar(cookieStore);
         this.axiosInstance = wrapper(axios.create({
-            timeout: timeout,
+            ...axios_config,
             jar: this.cookieJar,
             withCredentials: true
         }));
