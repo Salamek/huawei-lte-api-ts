@@ -3,7 +3,7 @@ import { ResponseCodeEnum } from './enums/client';
 import { Session } from './Session';
 import { Parser, Builder } from "xml2js";
 import { join } from 'path';
-import { AxiosResponse } from 'axios';
+import { AxiosResponse, AxiosRequestConfig } from 'axios';
 import * as FormData from 'form-data';
 import { GetResponseType, SetResponseType } from './types'
 
@@ -35,8 +35,8 @@ export class Connection {
     session: Session;
     ready: Promise<void>;
 
-    constructor(url: string, timeout: number) {
-        this.session = new Session(timeout);
+    constructor(url: string, axios_config: AxiosRequestConfig) {
+        this.session = new Session(axios_config);
 
         if (!url.endsWith('/')) {
             url += '/';
