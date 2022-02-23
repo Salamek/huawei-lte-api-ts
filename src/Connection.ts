@@ -261,8 +261,8 @@ export class Connection {
                 if ('__requestverificationtokentwo' in response.headers) {
                     this.requestVerificationTokens.push(response.headers['__requestverificationtokentwo']);
                 }
-            } else if ('__requestverificationtoken:' in response.headers) {
-                this.requestVerificationTokens.push(response.headers['__requestverificationtoken:']);
+            } else if ('__requestverificationtoken' in response.headers) {
+                this.requestVerificationTokens.push(response.headers['__requestverificationtoken']);
             }
 
             return responseData;
